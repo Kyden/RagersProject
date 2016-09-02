@@ -1,5 +1,24 @@
+/**
+ * Initialize the Game and starts it.
+ */
+var game = new Game();
 
-	var ctx;
+function init() {
+	if(game.init())
+		game.start();
+}
+
+function Game(){
+	var canvas = document.getElementById("canvas");
+	var ctx = canvas.getContext("2d");
+	ctx.fillStyle = "red";
+	ctx.fillRect(100, 100, 150, 150);
+}
+	
+	
+	
+	
+/*var ctx;
 
 function createPiece(color, positions){
 	this.color = color;
@@ -28,4 +47,4 @@ $(document).ready(function(){
 	ctx = canvas.getContext("2d");
 	var array = [[1], [1], [1,1]];
 	createPiece("red", array);
-});
+});*/
