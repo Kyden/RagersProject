@@ -3,6 +3,9 @@
  */
 var side = 30;
 var background = "white";
+var Anim, piece, structure;
+window.addEventListener('keydown', this.check, false);
+var sound1 = new Audio('explode.mp3');
 var game = new Game();
 
 /*function init() {
@@ -12,19 +15,13 @@ var game = new Game();
 
 function Game(){
 	var canvas = document.getElementById("canvas");
+	Anim = window.setInterval(Animate, 300);
 	//var ctx = canvas.getContext("2d");
 	//ctx.fillStyle = "red";
 	//ctx.fillRect(100, 100, 150, 150);
 	
 	var array = [[1], [1], [1,1]];
-	var piece = CreatePiece("blue", array);
-	
-	while (piece.state === "moving"){
-		window.setInterval(function(){Animate(piece);}, 100);
-	}
-	
-	
-	
+	piece = CreatePiece("blue", array);	
 
    /* array = [[1, 1], [1,1]];
 	var piece2 = CreatePiece("red", array);
@@ -36,8 +33,44 @@ function Game(){
 
 	
 }
+
+
+function check(e) {
+	var key = e.keyCode;
+	switch(key) {
+		case 37:
+			goLeft();
+			break;
+		case 39:
+			goRight();
+			break;
+		case 40:
+			goDown();
+			break;
+		default:
+			break;
+	}
+}
+
+function goLeft() {
+	ClearPiece(piece);
+	piece.x -= 30;
+	Draw(piece);
+}
+
+function goRight() {
+	ClearPiece(piece);
+	piece.x += 30;
+	Draw(piece);
+}
+
+function goDown() {
+	ClearPiece(piece);
+	piece.y += 30;
+	Draw(piece);
+}
 	
-function Draw(piece){
+function Draw(){
 	var ctx = canvas.getContext("2d");
 	ctx.fillStyle = piece.color;
 	
@@ -56,7 +89,7 @@ function Draw(piece){
 	}
 }
 
-function ClearPiece(piece){
+function ClearPiece(){
 	var ctx = canvas.getContext("2d");
 	ctx.fillStyle = background;
 	
@@ -81,22 +114,30 @@ function CreatePiece(color, positions){
 		positions: positions,
 		x : 625,
 		y : 0,
-		state : "moving"
 	}
 	return piece;
 }
 
-function Animate(piece){
+//TODO:Rethink collision code, animation code (movement & constant piece drop) also, lower & side bounds
+function Animate(){
 	var pcHeight = side*piece.positions.length;
 	if (piece.y + pcHeight == 720) {
-		piece.state = "blocked";
+		clearInterval(Anim);
 		return;
 	}
 		
 	
-	ClearPiece(piece);
+	ClearPiece();
 	piece.y+=side;
-	Draw(piece);
+	Draw();
+}
+
+function RowClear() {
+	sound1.play();
+}
+
+function DetectCollision() {
+	
 }
 
 
