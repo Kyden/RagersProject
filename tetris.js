@@ -19,6 +19,10 @@ function Game(){
 	//var ctx = canvas.getContext("2d");
 	//ctx.fillStyle = "red";
 	//ctx.fillRect(100, 100, 150, 150);
+	var emptyStruct = [0,0,0,0,0,0,0,0,0,0];
+	structure = CreatePiece("red", emptyStruct);
+	structure.x = 0;
+	structure.y = 690;
 	
 	var array = [[1], [1], [1,1]];
 	piece = CreatePiece("blue", array);	
@@ -89,6 +93,19 @@ function Draw(){
 	}
 }
 
+function DrawStructure(){
+	var ctx = canvas.getContext("2d");
+	ctx.fillStyle = structure.color;
+	
+	for (var i = 0; i < structure.positions.length; i++){
+		if ( structure.positions[i] > 0){
+			for (var j = 0; j < structure.positions[i]; j++){
+				ctx.fillRect(i*side, 330-(j*side), 30, 30);
+			}
+		}
+	}
+}
+
 function ClearPiece(){
 	var ctx = canvas.getContext("2d");
 	ctx.fillStyle = background;
@@ -112,7 +129,7 @@ function CreatePiece(color, positions){
 	var piece = {
 		color: color,
 		positions: positions,
-		x : 625,
+		x : 360,
 		y : 0,
 	}
 	return piece;
@@ -120,11 +137,7 @@ function CreatePiece(color, positions){
 
 //TODO:Rethink collision code, animation code (movement & constant piece drop) also, lower & side bounds
 function Animate(){
-	var pcHeight = side*piece.positions.length;
-	if (piece.y + pcHeight == 720) {
-		clearInterval(Anim);
-		return;
-	}
+	DetectCollision(2);
 		
 	
 	ClearPiece();
@@ -136,10 +149,42 @@ function RowClear() {
 	sound1.play();
 }
 
-function DetectCollision() {
-	
+/*
+0 = left; 1 = right; 2 = down
+*/
+function DetectCollision(direction) {
+	if (direction == 0){}
+	if (direction == 1){}
+	if (direction == 2){
+		var pcHeight = side*piece.positions.length;
+		var PieceX = piece.x / 30;
+		if (piece.y + pcHeight == 360 || 
+			piece.y + pcHeight == structure.positions[PieceX] * 30) {
+			
+				ClearPiece();
+				
+				
+				var rows = piece.positions.length;
+				var columns;
+				var num = 0;
+		
+				for(var i = 0; i < rows; i++)
+				{
+					for(var j = 0; j < 3; j++) // 3 is temporary, cand avem I va fi 4, vedem cum detectam aia mai incolo
+					{
+						if(piece.positions[j][i] == 1)
+						num++;
+					}
+					structure.positions[piece.x / 30 + i] = num;
+					num = 0;
+				}
+				DrawStructure();
+				piece = CreatePiece("pink", [[1], [1], [1], [1]]);
+		}
+	}
 }
-
+	
+				
 
 
 /*var ctx;
