@@ -45,20 +45,28 @@ function drawPiece(){
 	var ctx = canvas.getContext("2d");
 	ctx.fillStyle = piece.color;
 	
-	ctx.fillRect(piece.x * side, piece.y * side, side, side);
-	ctx.fillRect(piece.x * side, (piece.y+1) * side, side, side);
-	ctx.fillRect(piece.x * side, (piece.y+2) * side, side, side);
-	ctx.fillRect((piece.x+1) * side, (piece.y+2) * side, side, side);
+	//ctx.fillRect(piece.x * side, piece.y * side, side, side);
+	//ctx.fillRect(piece.x * side, (piece.y+1) * side, side, side);
+	//ctx.fillRect(piece.x * side, (piece.y+2) * side, side, side);
+	//ctx.fillRect((piece.x+1) * side, (piece.y+2) * side, side, side);
+	for(var i = 0; i < 1280/30; i++){
+		for(var j = 0; j < 720/30; j++){
+			if(boardGrid[i][j] == 1){
+				ctx.fillRect(i*side, j*side, side, side);
+			}
+		}
+	}
 }
 
 function clearPiece(){
 	var ctx = canvas.getContext("2d");
 	ctx.fillStyle = background;
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
 	
-	ctx.fillRect(piece.x * side, piece.y * side, side, side);
-	ctx.fillRect(piece.x * side, (piece.y+1) * side, side, side);
-	ctx.fillRect(piece.x * side, (piece.y+2) * side, side, side);
-	ctx.fillRect((piece.x+1) * side, (piece.y+2) * side, side, side);
+	boardGrid[piece.x][piece.y] = 0;
+	boardGrid[piece.x][piece.y+1] = 0;
+	boardGrid[piece.x][piece.y+2] = 0;
+	boardGrid[piece.x+1][piece.y+2] = 0;
 }
 
 function movePiece(direction){
@@ -83,9 +91,21 @@ function movePiece(direction){
 	
 	clearPiece();
 	
-	boardGrid[piece.x][piece.y] = 0;
-	boardGrid[piece.x+1][piece.y+2] = 0;
-	piece.y++;
+	switch(direction){
+		case "down": 	
+			piece.y++;
+			break;
+		case "left":
+			piece.x--;
+			break;
+		case "right":
+			piece.x++;
+			break;
+		default: break;
+	}
+
+	
+	
 	initPiece(piece.x, piece.y);
 	drawPiece();
 }
@@ -132,5 +152,23 @@ function isCollisionDetected(direction){
 	return false;
 }
 
-// TODO : different shape pieces (I, J, L, etc..), collission
+function check(e) {
+	var key = e.keyCode;
+	switch(key) {
+		case 37:
+			movePiece("left");
+			break;
+		case 39:
+			movePiece("right");
+			break;
+		case 40:
+			movePiece("down");
+			break;
+		default:
+			break;
+	}
+}
+
+
+// TODO : different shape pieces (I, J, L, etc..), 
 
